@@ -49,4 +49,5 @@ def load_user(user_id):
 
 with app.app_context():
     user = User()
+    # wallet = Wallet()
     db.create_all()
