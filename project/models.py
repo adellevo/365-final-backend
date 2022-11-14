@@ -48,6 +48,12 @@ class Wallet(db.Model):
     privateKey = db.Column(db.String(50), unique=True)
     userId = db.Column(db.Integer, unique=True)
 
+# table that maps users to wallets
+class UsersWallets(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    walletId = db.Column(db.Integer) 
+    userId = db.Column(db.Integer)
+
 # class Stash(db.Model):
 #     def get_id(self):
 #            return (self.stashId)

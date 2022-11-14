@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 import urllib.parse 
 from flask_login import LoginManager
 
+from flask_cors import CORS, cross_origin
+
 import os
 from dotenv import load_dotenv
 
@@ -22,6 +24,10 @@ db = SQLAlchemy()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = key
 app.config['SQLALCHEMY_DATABASE_URI'] = connectionString
+
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 db.init_app(app)
 
 # blueprint for auth routes in our app
@@ -38,9 +44,9 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
+ 
 
-
-from .models import User
+from .models import User, Wallet
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -49,5 +55,5 @@ def load_user(user_id):
 
 with app.app_context():
     user = User()
-    # wallet = Wallet()
+    wallet = Wallet()
     db.create_all()
