@@ -1,8 +1,12 @@
+# general imports
 from flask import Blueprint, render_template, redirect, url_for, request, flash,jsonify
+
+# cors + authentication
 from flask_jwt_extended import create_access_token,jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 
+# sql execution
 from .models import User
 from . import db
 
@@ -30,7 +34,7 @@ def signup_post():
     db.session.add(new_user)
     db.session.commit()
     user_dic = new_user.get_user()
-    user_dic["auth_token"] = create_access_token(identity = username)
+    # user_dic["auth_token"] = create_access_token(identity = username)
     
     return jsonify({"user":user_dic,"message":"new account create"}), 201
 
@@ -38,7 +42,8 @@ def signup_post():
 @jwt_required
 def logout():
     # logout_user()
-    return redirect(url_for('main.index'))
+    return 200
+    # return redirect(url_for('main.index'))
 
 @auth.route('/login', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
@@ -47,9 +52,9 @@ def login_post():
     username = data["username"]
     password = data["password"]
 
-    user = User.query.filter_by(username=username).first()
     # check if the user actually exists
     # take the user-supplied password, hash it, and compare it to the hashed password in the database
+    user = User.query.filter_by(username=username).first()
     if not user or not check_password_hash(user.password, password):
         return jsonify({"message": "Invalid username or password"}), 401
     
@@ -57,22 +62,3 @@ def login_post():
     access_token = create_access_token(identity=username)
     user_dic["access_token"] = access_token
     return jsonify({"user":user_dic,"message":"Login success"})
-
-# @auth.route('/protected')
-# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-# @jwt_required
-# def my_profile():
-#     return jsonify(foo="bar")
-
-
-# @auth.route('/add-wallet', methods=['POST'])
-# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-# @jwt_required
-# def add_wallet():
-#     # add to wallet table
-
-#     # add to join table that links users and wallets
-#     wallet_to_add = UsersWallets(username=username, password=generate_password_hash(password, method='sha256'))
-#     db.session.add(wallet_to_add)
-    
-#     db.session.commit()

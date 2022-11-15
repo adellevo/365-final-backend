@@ -9,3 +9,4 @@
 ./auth
 ./instance
 auth/lib
+./project/test.py
