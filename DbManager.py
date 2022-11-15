@@ -18,7 +18,7 @@ wallets = Table(
 
 Transactions = Table(
    'Transactions', meta, 
-   Column('function', string),
+   Column('function', String),
    Column('module',String),
    Column('userId',String)
    Column('payloadId', String),
@@ -29,7 +29,7 @@ meta.create_all(engine)
 
 class DbManager:
 
-    def __init__(config):
+    def __init__(self, config):
         self.engine = create_engine('sqlite:///college.db', echo = True)
         self.meta = MetaData()
 
