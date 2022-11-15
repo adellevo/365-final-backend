@@ -57,3 +57,22 @@ def login_post():
     access_token = create_access_token(identity=username)
     user_dic["access_token"] = access_token
     return jsonify({"user":user_dic,"message":"Login success"})
+
+# @auth.route('/protected')
+# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
+# @jwt_required
+# def my_profile():
+#     return jsonify(foo="bar")
+
+
+# @auth.route('/add-wallet', methods=['POST'])
+# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
+# @jwt_required
+# def add_wallet():
+#     # add to wallet table
+
+#     # add to join table that links users and wallets
+#     wallet_to_add = UsersWallets(username=username, password=generate_password_hash(password, method='sha256'))
+#     db.session.add(wallet_to_add)
+    
+#     db.session.commit()
