@@ -2,13 +2,22 @@ from flask_login import UserMixin
 from . import db
 from flask_sqlalchemy import SQLAlchemy
 # https://prod.liveshare.vsengsaas.visualstudio.com/join?7174E3856CBFA5BD076070B8632B16F383B0
-class User(UserMixin, db.Model):
+class User(db.Model):
     def get_id(self):
            return (self.userId)
 
     userId = db.Column(db.Integer, primary_key=True) 
     username = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
+
+    def get_user(self):
+        return {
+            "userId": self.userId,
+            "username": self.username,
+            "password": self.password,
+
+        }
+
 
 # class Transaction(db.Model):
 #        def get_id(self):

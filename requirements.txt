@@ -1,3 +1,4 @@
 aptos-sdk
 flask
 flask-cors
+flask-jwt-extended

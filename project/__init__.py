@@ -2,7 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import urllib.parse 
 from flask_login import LoginManager
-
+# from flask_jwt_extended import create_access_token
+# from flask_jwt_extended import get_jwt_identity
+# from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 
 import os
@@ -24,6 +27,8 @@ db = SQLAlchemy()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = key
 app.config['SQLALCHEMY_DATABASE_URI'] = connectionString
+
+jwt = JWTManager(app)
 
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
