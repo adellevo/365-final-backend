@@ -43,7 +43,7 @@ def create_stash():
             new_arg = Arg(genericType=arg['genericType'], value=arg['value'], transactionId=tx['hash'],index=i,)
             db.session.add(new_arg)
         new_txn = Transaction(address=tx['address'], module= tx['module'], function=tx['function'],
-             date= tx['date'],transactionId=tx['hash'],stashId=new_stash.stashId)
+                date= tx['date'],transactionId=tx['hash'],stashId=new_stash.stashId)
         db.session.add(new_txn)
     
     db.session.commit()
