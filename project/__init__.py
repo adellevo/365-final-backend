@@ -2,11 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import urllib.parse 
 from flask_login import LoginManager
-# from flask_jwt_extended import create_access_token
-# from flask_jwt_extended import get_jwt_identity
-# from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 import os
 from dotenv import load_dotenv
@@ -43,20 +40,7 @@ app.register_blueprint(auth_blueprint)
 from .main import main as main_blueprint
 app.register_blueprint(main_blueprint) 
 
-
-
-login_manager = LoginManager()
-login_manager.login_view = 'auth.login'
-login_manager.init_app(app)
-
- 
-
 from .models import User, Wallet
-
-@login_manager.user_loader
-def load_user(user_id):
-    # since the user_id is just the primary key of our user table, use it in the query for the user
-    return User.query.get(int(user_id))
 
 with app.app_context():
     user = User()

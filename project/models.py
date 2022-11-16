@@ -61,7 +61,7 @@ class Wallet(db.Model):
 class UsersWallets(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
     walletId = db.Column(db.Integer) 
-    userId = db.Column(db.Integer)
+    userId = db.Column(db.Integer) 
 
 # class Stash(db.Model):
 #     def get_id(self):

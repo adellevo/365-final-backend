@@ -8,6 +8,7 @@ from flask_cors import cross_origin
 
 # sql execution
 from . import db
+from .models import *
 import sqlalchemy
 import urllib.parse
 
@@ -27,13 +28,29 @@ def my_profile():
 
 @main.route('/add-wallet', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-@jwt_required
+@jwt_required()
 def add_wallet():
-    # add to wallet table
+    data = request.json
+
+    # --- add to wallet table ---
+
+    # walletId = data["walletId"]
+    address = data["address"]
+    privateKey = data["privateKey"]
+
+    # get user
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first() 
+    userId = user.userId
+
+    new_wallet = Wallet(address=address, privateKey=privateKey, userId=userId)
+    db.session.add(new_wallet)
 
     # add to join table that links users and wallets
-    wallet_to_add = UsersWallets(username=username, password=generate_password_hash(password, method='sha256'))
-    db.session.add(wallet_to_add)
+    walletId = new_wallet.walletId
+    new_entry = UsersWallets(walletId=jsonify(walletId), userId=userId)
+    db.session.add(new_entry)
     
     db.session.commit()
+    return jsonify({"walletId": walletId, "address": address,"privateKey": privateKey, "userId": userId}), 200
 
