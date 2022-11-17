@@ -1,0 +1,54 @@
+{
+  "wallets": [
+    {
+      "userId": 2,
+      "address": "6375e90b00f9d9aead185265",
+      "privateKey": "6375e90b63054291ecaffd30"
+    },
+    {
+      "userId": 4,
+      "address": "6375e90b9c93cd29e2c9f905",
+      "privateKey": "6375e90b5510fc7c23fb0342"
+    },
+    {
+      "userId": 8,
+      "address": "6375e90b695726fbffc916f2",
+      "privateKey": "6375e90bfec4c9e5bfa82fd3"
+    },
+    {
+      "userId": 10,
+      "address": "6375e90bed1d52d280b794a4",
+      "privateKey": "6375e90b6c4e132a60d03acd"
+    },
+    {
+      "userId": 1,
+      "address": "6375e90b9867260fd8df3047",
+      "privateKey": "6375e90bc9d1003aa547ef94"
+    },
+    {
+      "userId": 4,
+      "address": "6375e90bc8f7901fe3ae39ba",
+      "privateKey": "6375e90b03752c9803fc5973"
+    },
+    {
+      "userId": 2,
+      "address": "6375e90b8bcda690819879a2",
+      "privateKey": "6375e90b23073fb0f4827049"
+    },
+    {
+      "userId": 7,
+      "address": "6375e90ba0605c0127fdbfae",
+      "privateKey": "6375e90bb6d6cdd1cba6a737"
+    },
+    {
+      "userId": 6,
+      "address": "6375e90bf28175d1c220e307",
+      "privateKey": "6375e90b89681f4253cbd720"
+    },
+    {
+      "userId": 3,
+      "address": "6375e90b14f181dfaa1715a5",
+      "privateKey": "6375e90ba434b85460ee7f1f"
+    }
+  ]
+}
