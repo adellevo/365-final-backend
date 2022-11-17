@@ -1,4 +1,3 @@
-from flask_login import UserMixin
 from . import db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
@@ -26,8 +25,8 @@ class Wallet(db.Model):
 
     walletId = db.Column(db.Integer, primary_key=True) 
     userId = db.Column(db.Integer,db.ForeignKey("user.userId"))
-    address = db.Column(db.String(50), unique=True)
-    privateKey = db.Column(db.String(50), unique=True,nullable=True)
+    address = db.Column(db.String(50), unique=False)
+    privateKey = db.Column(db.String(50), unique=False,nullable=True)
 
 class Stash(db.Model):
     def get_id(self):
