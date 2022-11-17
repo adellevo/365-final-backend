@@ -16,10 +16,17 @@ username = os.environ.get("DB_USER")
 database = os.environ.get("DB_NAME")
 host = os.environ.get("DB_HOST")
 key = os.environ.get("DB_SECRET_KEY")
-
+  
 # Build the connection string based on database specific parameters
+# DATABASE_URL="mysql://myusername:mypassword@server.us-east-2.psdb.cloud/mydb?sslaccept=strict"
+
 connectionString = f"{sqldialect}://{username}:{escapedPassword}@{host}/{database}"
 
+# connectionString = 'mysql://' + {username} + ":" + {escapedPassword} + "@" + {host} + 'us-east-2.psdb.cloud/demo?ssl={"rejectUnauthorized":true}'
+# ssl_mode = "VERIFY_IDENTITY",
+#   ssl      = {
+#     "ca": "/etc/ssl/cert.pem"
+#   }
 db = SQLAlchemy() 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = key
