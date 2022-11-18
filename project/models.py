@@ -24,8 +24,9 @@ class Wallet(db.Model):
            return (self.walletId)
 
     walletId = db.Column(db.Integer, primary_key=True) 
-    userId = db.Column(db.Integer,db.ForeignKey("user.userId"))
-    address = db.Column(db.String(50), unique=False)
+    userId = db.Column(db.Integer)
+    name=db.Column(db.String(100),nullable=True)
+    address = db.Column(db.String(66), unique=False)
     privateKey = db.Column(db.String(50), unique=False,nullable=True)
 
 class Stash(db.Model):
@@ -33,19 +34,40 @@ class Stash(db.Model):
            return (self.stashId)
 
     stashId = db.Column(db.Integer, primary_key=True) 
-    name = db.Column(db.String(64))
-    userId = db.Column(db.Integer,db.ForeignKey("user.userId"))
-    walletId = db.Column(db.Integer,db.ForeignKey("wallet.walletId"))
+    name = db.Column(db.String(66))
+    userId = db.Column(db.Integer)
+    walletId = db.Column(db.Integer)
+
+    def get_stash(self):
+        return {
+            "stashId": self.stashId,
+            "name": self.name,
+            "userId": self.userId,
+            "walletId": self.walletId,
+        }
 
 class Transaction(db.Model):
        def get_id(self):
            return (self.transactionId)
 
        transactionId = db.Column(db.Integer, primary_key=True) 
-       address = db.Column(db.String(64))
+       name = db.Column(db.String(66),nullable=True)
+       address = db.Column(db.String(66))
+       module = db.Column(db.String(100))
        function = db.Column(db.String(100))
-    #    date = db.Column(db.String(100))
-       stashId = db.Column(db.Integer,db.ForeignKey("stash.stashId"))
+       date = db.Column(db.String(100),nullable=True)
+       stashId = db.Column(db.Integer)
+
+       def get_transaction(self):
+                 return {
+                 "transactionId": self.transactionId,
+                 "name": self.name,
+                 "address": self.address,
+                 "module": self.module,
+                 "function": self.function,
+              #    "date": self.date,
+                 "stashId": self.stashId,
+                 }
     #    userId = db.Column(db.Integer,db.ForeignKey("user.userId"))
     
 
@@ -56,13 +78,13 @@ class Event(db.Model):
        eventType = db.Column(db.String(50))
        name = db.Column(db.String(50))
        amount = db.Column(db.Integer,nullable=True)
-       transactionId = db.Column(db.Integer,db.ForeignKey("transaction.transactionId"))
+       transactionId = db.Column(db.Integer)
 
 class Arg(db.Model):
     def get_id(self):
            return (self.stashId)
     argId = db.Column(db.Integer, primary_key=True, unique=True)
-    transactionId = db.Column(db.Integer,db.ForeignKey("transaction.transactionId"))
+    transactionId = db.Column(db.Integer)
     genericType = db.Column(db.String(50))
     index = db.Column(db.Integer)
     value = db.Column(db.String(50))

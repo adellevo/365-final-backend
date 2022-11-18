@@ -22,13 +22,14 @@ def add_wallet():
     # walletId = data["walletId"]
     address = data["address"]
     privateKey = data["privateKey"]
+    name = data["name"]
 
     # get user
     userId = get_jwt_identity()
     user = User.query.filter_by(userId=userId).first() 
     userId = user.userId
 
-    new_wallet = Wallet(address=address, privateKey=privateKey, userId=userId)
+    new_wallet = Wallet(address=address, privateKey=privateKey,name=name, userId=userId)
     db.session.add(new_wallet)
     
     db.session.commit()

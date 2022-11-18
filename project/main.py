@@ -26,7 +26,12 @@ def index():
 @jwt_required()
 def my_profile():
     current_user = get_jwt_identity()
-    return jsonify(current_user), 200  
+    user_stashes = Stash.query.filter_by(userId=current_user).all()
+    user_info = User.query.filter_by(userId=current_user).first()
+    temp_user = user_info.get_user()
+    temp_user['stashes'] = json.user_stashes
+    print(temp_user)
+    return {"user":temp_user}, 200  
 
 # table populatation -- helper functions 
 

@@ -38,6 +38,7 @@ def signup_post():
     
     return jsonify({"user":user_dic,"message":"new account create"}), 201
 
+
 @auth.route('/logout')
 @jwt_required
 def logout():

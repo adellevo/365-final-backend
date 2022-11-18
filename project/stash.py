@@ -13,36 +13,56 @@ import sqlalchemy
 import urllib.parse
 
 stash = Blueprint('stash', __name__)
-
 @stash.route('/create-stash', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 # @jwt_required()
 def create_stash():
     data = request.json
-    new_stash = Stash(name=data['name'], userId=2, walletId=data['walletId'])
+    new_stash = Stash(name=data['name'], userId=data['userId'], walletId=data['walletId'])
     db.session.add(new_stash)
     db.session.commit()
     
     for tx in data['transactions']:
-        new_txn = Transaction(address=tx['address'], function=tx['function'], stashId=new_stash.stashId)
+        new_txn = Transaction(
+            address=tx['address'],
+            module = tx['module'],
+            function=tx['function'],
+            stashId=new_stash.stashId)
         db.session.add(new_txn)
         db.session.commit()
         
-        events = tx['events']
-        for event in events:
-            new_event = Event(eventType=event['type'], name=event['name'], amount=event['amount'], transactionId=new_txn.transactionId)
-            db.session.add(new_event)
-        for i in range(len(tx['args'])):
-            arg = tx['args']
-            new_arg = Arg(genericType=arg['genericType'], value=arg['value'], transactionId=tx['hash'],index=i,)
-            db.session.add(new_arg)
-        new_txn = Transaction(address=tx['address'], module= tx['module'], function=tx['function'],
-             date= tx['date'],transactionId=tx['hash'],stashId=new_stash.stashId)
-        db.session.add(new_txn)
-    
-    db.session.commit()
+        # events = tx['events']
+        # for event in events:
+        #     new_event = Event(eventType=event['type'], name="DEFAULT", amount=1, transactionId=new_txn.transactionId)
+        #     db.session.add(new_event)
+        #     db.session.commit()
 
     return {"message":"stash created"}, 200
+
+@stash.route('/user-stashes', methods=['POST'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@jwt_required()
+def get_user_stashes():
+    userId = get_jwt_identity()
+    temp = []
+    stashes = Stash.query.filter_by(userId=userId).all()
+    for stash in stashes:
+        temp_stash = stash.get_stash()
+        # get all the transactions for each stash
+        transactions = Transaction.query.filter_by(stashId=stash.stashId).all()
+        temp_stash['transactions'] = []
+        for transaction in transactions:
+            temp_transaction = transaction.get_transaction()
+            # get all the events for each transaction
+            # events = Event.query.filter_by(transactionId=transaction.transactionId).all()
+            # temp_transaction['events'] = []
+            # for event in events:
+            #     temp_transaction['events'].append(event.get_event())
+            temp_stash['transactions'].append(temp_transaction)
+        temp.append(temp_stash)
+        print(stash.get_stash())
+    return {"message":"Stashes found","stashes":temp}, 200
+
 
 @stash.route('/delete-stash', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
@@ -78,13 +98,14 @@ def insert_transaction():
     stashId = data['stashId']
     tx = data['transaction']
     events = tx['events']
+    print(events)
     
     new_txn = Transaction(address=tx['address'], function=tx['function'], stashId=stashId)
     db.session.add(new_txn)
     db.session.commit()
     
     for event in events:
-        new_event = Event(eventType=event['type'], name=event['name'], amount=event['amount'], transactionId=new_txn.transactionId)
+        new_event = Event(eventType=event['type'], name=event['name'], amount=100000, transactionId=new_txn.transactionId)
         db.session.add(new_event)
         db.session.commit()
 
@@ -93,7 +114,6 @@ def insert_transaction():
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 @jwt_required()
 def stash_contains():
-
     pass
 
 
