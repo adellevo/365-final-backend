@@ -79,18 +79,16 @@ def populate():
 @main.route('/transactions/1', methods=['GET'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def reporting_1():
-    data = request.json
-    stashId = data['stashId']
-    
-    eventTypeData = db.session.query(Event.eventType, sqlalchemy.func.count(Event.eventType)).select_from(Event).\
+    eventTypeData = db.session.query(Stash.stashId, Event.eventType, sqlalchemy.func.count(Event.eventType)).\
+        select_from(Event).\
         join(Transaction).\
         join(Stash).\
-        filter_by(stashId=stashId).\
-        group_by(Event.eventType)
+        group_by(Event.eventType, Stash.stashId)
 
     eventTypeCounts = []
     for event in eventTypeData:
-        eventTypeCounts.append((event[0], event[1]))
+        d = {"stashId": event[0], "eventType": event[1], "count": event[2]}
+        eventTypeCounts.append(d)
 
     return {"eventTypeCounts": eventTypeCounts}, 200
 
@@ -102,7 +100,9 @@ def reporting_2():
     stashId = data['stashId']
     eventType = data['eventType']
 
-    events = Event.query.filter_by(eventType=eventType).join(Transaction).filter_by(stashId=stashId)
+    events = Event.query.filter_by(eventType=eventType).\
+        join(Transaction).\
+        filter_by(stashId=stashId)
 
     transactionIds = []
     for event in events:
@@ -125,3 +125,18 @@ def reporting_3():
 
     return {"stashIds": stashIds}, 200
 
+# reporting query 4 - count of function / address pairs in transactions 
+@main.route('/transactions/4', methods=['GET'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+def reporting_4():
+    transactionData = db.session.query(Transaction.address, Transaction.function, sqlalchemy.func.count()).\
+        select_from(Transaction).\
+        join(Stash).\
+        group_by(Transaction.address, Transaction.function)
+
+    functionAddressPairs = []
+    for transaction in transactionData:
+        d = {"address": transaction[0], "function": transaction[1], "count": transaction[2]}
+        functionAddressPairs.append(d)
+
+    return {"functionAddressPairs": functionAddressPairs}, 200

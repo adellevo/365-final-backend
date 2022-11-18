@@ -34,3 +34,19 @@ JOIN
 	stash ON t.stashId = stash.stashId
 WHERE
 	userId = 1
+
+------------------------------
+
+SELECT
+	transaction.address,
+	transaction.`function`,
+	COUNT(*) AS occurences
+FROM
+	transaction
+JOIN 
+	stash ON stash.stashId = transaction.stashId
+GROUP BY
+	transaction.address,
+	transaction.`function`
+ORDER BY	
+	occurences DESC
