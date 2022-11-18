@@ -1,0 +1,47 @@
+# of rows (https://json-generator.com/#)
+
+users - 10
+
+------------------------------------
+
+wallets - 10
+
+------------------------------------
+
+stashes - 35000
+
+[
+  '{{repeat(35000)}}',
+  {
+    name: '{{objectId()}}',
+    userId: '{{integer(1, 10)}}',
+    walletId: '{{integer(1, 10)}}'
+  }
+]
+
+------------------------------------
+
+transactions - 35000
+
+[
+  '{{repeat(35000)}}',
+  {
+    address: '{{objectId()}}',
+    'function': '{{objectId()}}',
+    stashId: '{{integer(1, 35000)}}',
+  }
+]
+
+------------------------------------
+
+events - 35000
+
+[
+  '{{repeat(35000)}}',
+  {
+    eventType: '{{random("withdraw", "transfer", "deposit", "burn")}}',
+    name: '{{objectId()}}',
+    amount: '{{integer(1, 100000)}}',
+    transactionId: '{{integer(1, 35000)}}'
+  }
+]

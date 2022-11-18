@@ -34,7 +34,7 @@ def signup_post():
     db.session.add(new_user)
     db.session.commit()
     user_dic = new_user.get_user()
-    # user_dic["auth_token"] = create_access_token(identity = username)
+    user_dic["auth_token"] = create_access_token(identity = user_dic["userId"])
     
     return jsonify({"user":user_dic,"message":"new account create"}), 201
 
@@ -59,6 +59,6 @@ def login_post():
         return jsonify({"message": "Invalid username or password"}), 401
     
     user_dic = user.get_user()
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=user_dic["userId"])
     user_dic["access_token"] = access_token
-    return jsonify({"user":user_dic,"message":"Login success"})
+    return jsonify({"user":user_dic,"message":"Login success"}) 
