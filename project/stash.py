@@ -41,22 +41,21 @@ def create_stash():
 # @jwt_required()
 def delete_stash():
     data = request.json
-    stash = Stash.query.filter_by(stashId=data['stashId'])
-    stash_txs = Transaction.query.filter_by(stashId=data['stashId'])
+    stashId = data['stashId']
+    stash = Stash.query.filter_by(stashId=stashId)
+    stash_txs = Transaction.query.filter_by(stashId=stashId)
     
     for tx in stash_txs:
-        # tx.query.delete()
         tx_events = Event.query.filter_by(transactionId=tx.transactionId)
         for event in tx_events:
-            event.query.delete()
-            Event.delete().where(eventId=eventId)
-            # db.session.commit()
+            Event.query.filter_by(eventId=event.eventId).delete()
+            db.session.commit()
 
-        tx.query.delete()
-        # db.session.commit()
+        Transaction.query.filter_by(transactionId=tx.transactionId).delete()
+        db.session.commit()
        
     if stash:
-        stash.query.delete()
+        Stash.query.filter_by(stashId=stashId).delete()
         db.session.commit()
         return {"message":"Stash Delete"},200
     else:
