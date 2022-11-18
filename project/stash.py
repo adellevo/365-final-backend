@@ -63,21 +63,23 @@ def delete_stash():
 
 @stash.route('/insert-transaction', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-@jwt_required()
+# @jwt_required()
 def insert_transaction():
     data = request.json
     stashId = data['stashId']
     tx = data['transaction']
-    events = tx['events']
-    
+
     new_txn = Transaction(address=tx['address'], function=tx['function'], stashId=stashId)
     db.session.add(new_txn)
     db.session.commit()
     
+    events = tx['events']
     for event in events:
         new_event = Event(eventType=event['type'], name=event['name'], amount=event['amount'], transactionId=new_txn.transactionId)
         db.session.add(new_event)
         db.session.commit()
+
+    return {"message":"transaction created"}, 200
 
 # LOOK for stashes with addr/func/event
 @stash.route('/stash-contains')
