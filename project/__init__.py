@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import urllib.parse 
-from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 

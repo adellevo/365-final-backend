@@ -31,7 +31,7 @@ def create_stash():
     # }
     data = request.json
     current_user = get_jwt_identity()
-    new_stash = Stash(name=data['name'], userId=current_user['userId'],walletId=data['walletId'])
+    new_stash = Stash(name=data['name'], userId=current_user,walletId=data['walletId'])
     db.session.add(new_stash)
     for tx in data['transactions']:
         events = tx['events']

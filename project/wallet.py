@@ -18,9 +18,7 @@ wallet = Blueprint('wallet', __name__)
 @jwt_required()
 def add_wallet():
     data = request.json
-
     # --- add to wallet table ---
-
     # walletId = data["walletId"]
     address = data["address"]
     privateKey = data["privateKey"]
@@ -32,11 +30,6 @@ def add_wallet():
 
     new_wallet = Wallet(address=address, privateKey=privateKey, userId=userId)
     db.session.add(new_wallet)
-
-    # add to join table that links users and wallets
-    # walletId = new_wallet.walletId
-    # new_entry = UsersWallets(walletId=jsonify(walletId), userId=userId)
-    # db.session.add(new_entry)
     
     db.session.commit()
     return jsonify({"walletId": new_wallet.walletId, "address": address,"privateKey": privateKey, "userId": userId}), 200
