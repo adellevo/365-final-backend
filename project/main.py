@@ -74,10 +74,54 @@ def populate():
     # populate_transaction_table('/Users/adellevo/Desktop/CSC365/final-project/365-final-backend/project/transactions.json')
     return {"hello": "hi"}, 200  
 
-# @main.route('/transactions', methods=['POST'])
-# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-# def filter_transactions():
-#     data = request.json
 
-#     eventType = 
+# reporting query 1 - get count of each event type in stash
+@main.route('/transactions/1', methods=['GET'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+def reporting_1():
+    data = request.json
+    stashId = data['stashId']
+    
+    eventTypeData = db.session.query(Event.eventType, sqlalchemy.func.count(Event.eventType)).select_from(Event).\
+        join(Transaction).\
+        join(Stash).\
+        filter_by(stashId=stashId).\
+        group_by(Event.eventType)
+
+    eventTypeCounts = []
+    for event in eventTypeData:
+        eventTypeCounts.append((event[0], event[1]))
+
+    return {"eventTypeCounts": eventTypeCounts}, 200
+
+# reporting query 2 - get all transactions associated with event type
+@main.route('/transactions/2', methods=['GET'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+def reporting_2():
+    data = request.json
+    stashId = data['stashId']
+    eventType = data['eventType']
+
+    events = Event.query.filter_by(eventType=eventType).join(Transaction).filter_by(stashId=stashId)
+
+    transactionIds = []
+    for event in events:
+        transactionIds.append(event.transactionId)
+
+    return {"transactionIds": transactionIds}, 200
+
+# reporting query 3 - get all stashes associated with specific user
+@main.route('/transactions/3', methods=['GET'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+def reporting_3():
+    data = request.json
+    userId = data['userId']
+
+    stashes = Stash.query.filter_by(userId=userId)
+
+    stashIds = []
+    for stash in stashes:
+        stashIds.append(stash.stashId)
+
+    return {"stashIds": stashIds}, 200
 

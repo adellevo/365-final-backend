@@ -1,0 +1,36 @@
+reporting-1
+
+SELECT
+    SUM(amount), 
+    transactionId
+FROM
+	event
+GROUP BY
+	transactionId
+
+-----------------------------
+
+reporting-2
+
+SELECT
+	*
+FROM
+	event
+JOIN
+	transaction ON transaction.transactionId = event.transactionId
+WHERE
+	eventType="withdraw"
+	AND stashId=19493
+
+------------------------------
+
+reporting-3
+
+SELECT
+	*
+FROM
+	transaction AS t
+JOIN
+	stash ON t.stashId = stash.stashId
+WHERE
+	userId = 1
