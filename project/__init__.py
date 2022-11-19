@@ -6,6 +6,7 @@ from flask_cors import CORS
 
 import os
 from dotenv import load_dotenv
+import sqlalchemy
 
 load_dotenv()
 
@@ -19,17 +20,26 @@ key = os.environ.get("DB_SECRET_KEY")
 # Build the connection string based on database specific parameters
 # DATABASE_URL="mysql://myusername:mypassword@server.us-east-2.psdb.cloud/mydb?sslaccept=strict"
 
-connectionString = f"{sqldialect}://{username}:{escapedPassword}@{host}/{database}"
-
+connectionString = f"{sqldialect}://{username}:{escapedPassword}@{host}/{database}?ssl_key=MyCertFolder/client-key.pem&ssl_cert=MyCertFolder/client-cert.pem"
+sqlUrl = sqlalchemy.engine.url.URL(
+    drivername="mysql+pymysql",
+    username=username,
+    password=escapedPassword,
+    host=host,
+    port=3306,
+    database=database,
+    query={"ssl_ca": "/etc/ssl/cert.pem"},
+)
 # connectionString = 'mysql://' + {username} + ":" + {escapedPassword} + "@" + {host} + 'us-east-2.psdb.cloud/demo?ssl={"rejectUnauthorized":true}'
 # ssl_mode = "VERIFY_IDENTITY",
 #   ssl      = {
 #     "ca": "/etc/ssl/cert.pem"
 #   }
 db = SQLAlchemy() 
-app = Flask(__name__)
+app = Flask(__name__,)
 app.config['SECRET_KEY'] = key
-app.config['SQLALCHEMY_DATABASE_URI'] = connectionString
+app.config['SSL'] = ('cert.pem', 'key.pem')
+app.config['SQLALCHEMY_DATABASE_URI'] = sqlUrl
 
 jwt = JWTManager(app)
 

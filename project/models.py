@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 # from flaskl_sqlalchemy import SQLAlchemy.
 # https://prod.liveshare.vsengsaas.visualstudio.com/join?7174E3856CBFA5BD076070B8632B16F383B0
+# 0xdfc873cf7dc8bc99148f0704574dee49b322e7558337315a53f5b9b2758d24ea
 class User(db.Model):
     def get_id(self):
            return (self.userId)
@@ -49,7 +50,7 @@ class Stash(db.Model):
 class Transaction(db.Model):
        def get_id(self):
            return (self.transactionId)
-
+           
        transactionId = db.Column(db.Integer, primary_key=True) 
        name = db.Column(db.String(66),nullable=True)
        address = db.Column(db.String(66))
