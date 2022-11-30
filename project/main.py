@@ -76,6 +76,7 @@ def populate_transaction_table(file_path):
 def populate():
     # populate_wallet_table('/Users/adellevo/Desktop/CSC365/final-project/365-final-backend/project/data/wallets.json')
     populate_stash_table('/Users/adellevo/Desktop/CSC365/final-project/365-final-backend/project/data/stashes.json')
+    # populate_dapp_table('./project/data/dapps.json')
     # populate_transaction_table('/Users/adellevo/Desktop/CSC365/final-project/365-final-backend/project/transactions.json')
     return {"hello": "hi"}, 200  
 

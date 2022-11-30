@@ -1,3 +1,4 @@
+import datetime
 from . import db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
@@ -89,4 +90,30 @@ class Arg(db.Model):
     genericType = db.Column(db.String(50))
     index = db.Column(db.Integer)
     value = db.Column(db.String(50))
+class Oracle(db.Model):
+    def get_id(self):
+           return (self.oracleId)
 
+    oracleId = db.Column(db.Integer, primary_key=True)
+    oracleName = db.Column(db.String(50))
+    oraclePlatform = db.Column(db.String(50))
+    a0 = db.Column(db.String(50))
+    s0 = db.Column(db.String(50))
+    p0 = db.Column(db.String(50))
+    a1 = db.Column(db.String(50))
+    p1 = db.Column(db.Float)
+    timestamp=db.Column(db.DateTime())
+
+
+class Dapp(db.Model):
+    def get_id(self):
+           return (self.dappId)
+
+    dappAddress = db.Column(db.String(66), primary_key=True)
+    name = db.Column(db.String(50))
+    url = db.Column(db.String(250),nullable=True)
+    description = db.Column(db.Text,nullable=True)
+    image = db.Column(db.String(50),nullable=True)
+    # category = db.Column(db.String(50))
+
+    

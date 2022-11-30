@@ -25,7 +25,7 @@ def signup_post():
     
     # if a user is found, we want to redirect back to signup page so user can try again
     if user: 
-        return {"message": "Username already exists"}, 409 
+        return {"message": "Username already exists, please change"}, 409 
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
     new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
