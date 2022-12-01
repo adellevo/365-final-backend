@@ -30,11 +30,6 @@ sqlUrl = sqlalchemy.engine.url.URL(
     database=database,
     query={"ssl_ca": "/etc/ssl/cert.pem"},
 )
-# connectionString = 'mysql://' + {username} + ":" + {escapedPassword} + "@" + {host} + 'us-east-2.psdb.cloud/demo?ssl={"rejectUnauthorized":true}'
-# ssl_mode = "VERIFY_IDENTITY",
-#   ssl      = {
-#     "ca": "/etc/ssl/cert.pem"
-#   }
 db = SQLAlchemy() 
 app = Flask(__name__,)
 app.config['SECRET_KEY'] = key

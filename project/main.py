@@ -104,7 +104,7 @@ def reporting_1():
 def reporting_2():
     data = request.json
     stashId = data['stashId']
-    eventType = data['eventType']
+    eventType = data['eventType'] 
 
     events = Event.query.filter_by(eventType=eventType).\
         join(Transaction).\

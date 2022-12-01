@@ -30,12 +30,14 @@ def create_stash():
             stashId=new_stash.stashId)
         db.session.add(new_txn)
         db.session.commit()
+        # print("SEM",new_txn.transactionId)
         
-        # events = tx['events']
-        # for event in events:
-        #     new_event = Event(eventType=event['type'], name="DEFAULT", amount=1, transactionId=new_txn.transactionId)
-        #     db.session.add(new_event)
-        #     db.session.commit()
+        events = tx['events']
+        for event in events:
+            print("EVENTS",event)
+            new_event = Event(eventType=event['type'], name="DEFAULT", amount=1, transactionId=new_txn.transactionId)
+            db.session.add(new_event)
+        db.session.commit()
 
     return {"message":"stash created"}, 200
 
@@ -48,16 +50,23 @@ def get_user_stashes():
     stashes = Stash.query.filter_by(userId=userId).all()
     for stash in stashes:
         temp_stash = stash.get_stash()
+        print("stash: ", temp_stash)
         # get all the transactions for each stash
         transactions = Transaction.query.filter_by(stashId=stash.stashId).all()
         temp_stash['transactions'] = []
         for transaction in transactions:
             temp_transaction = transaction.get_transaction()
+            print("transaction: ", temp_transaction)
             # get all the events for each transaction
-            # events = Event.query.filter_by(transactionId=transaction.transactionId).all()
-            # temp_transaction['events'] = []
+            events = Event.query.filter_by(transactionId=transaction.transactionId).all()
+            # print("events: ", [dict(e) for e in events])
+            temp_transaction['events'] = []
             # for event in events:
-            #     temp_transaction['events'].append(event.get_event())
+            #     print(event.eventId)
+            for event in events:
+                print("event: ", event)
+                temp_transaction['events'].append(event.get_event())
+              
             temp_stash['transactions'].append(temp_transaction)
         temp.append(temp_stash)
         print(stash.get_stash())
@@ -69,22 +78,21 @@ def get_user_stashes():
 # @jwt_required()
 def delete_stash():
     data = request.json
-    stash = Stash.query.filter_by(stashId=data['stashId'])
-    stash_txs = Transaction.query.filter_by(stashId=data['stashId'])
+    stashId = data['stashId']
+    stash = Stash.query.filter_by(stashId=stashId)
+    stash_txs = Transaction.query.filter_by(stashId=stashId)
     
     for tx in stash_txs:
-        # tx.query.delete()
         tx_events = Event.query.filter_by(transactionId=tx.transactionId)
         for event in tx_events:
-            event.query.delete()
-            Event.delete().where(eventId=eventId)
-            # db.session.commit()
+            Event.query.filter_by(eventId=event.eventId).delete()
+            db.session.commit()
 
-        tx.query.delete()
-        # db.session.commit()
+        Transaction.query.filter_by(transactionId=tx.transactionId).delete()
+        db.session.commit()
        
     if stash:
-        stash.query.delete()
+        Stash.query.filter_by(stashId=stashId).delete()
         db.session.commit()
         return {"message":"Stash Delete"},200
     else:
@@ -98,7 +106,7 @@ def insert_transaction():
     stashId = data['stashId']
     tx = data['transaction']
     events = tx['events']
-    print(events)
+    # print(events)
     
     new_txn = Transaction(address=tx['address'], function=tx['function'], stashId=stashId)
     db.session.add(new_txn)
@@ -107,17 +115,39 @@ def insert_transaction():
     for event in events:
         new_event = Event(eventType=event['type'], name=event['name'], amount=100000, transactionId=new_txn.transactionId)
         db.session.add(new_event)
-        db.session.commit()
-
-# LOOK for stashes with addr/func/event
-@stash.route('/stash-contains')
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
-@jwt_required()
-def stash_contains():
-    pass
-
+    db.session.commit()
 
 # Look for txs with addr/func/event
+# @stash.route('/stash-contains')
+# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
+# @jwt_required()
+# def stash_contains():
+    
+#     data = request.json
+#     filter_dic = dict(data['filter_dic'])
+#     stashId = data['stashId']
+#     # stash = Stash.query.filter_by(stashId=stashId).first()
+
+
+#     # {address: 12, event: "test"}
+
+
+#     stash_txs = Transaction.query.filter_by(stashId=data['stashId'])
+    
+#     # for tx in stash_txs:
+#     for filter_type in filter_dic.keys():
+#         if filter_type == "event":
+#             tx_events = Event.query.filter_by(event_type=filter_dic[filter_type],stashId=stashId)
+#         elif filter_type == "address":
+#             tx_events = Transaction.query.filter_by(address=filter_dic[filter_type])
+#         elif filter_type == "function":
+#             tx_events = Transaction.query.filter_by(function=filter_dic[filter_type])
+#     return {"result":tx_events}, 200
+
+
+    # pass
+
+
 
 
 
