@@ -27,9 +27,9 @@ class Wallet(db.Model):
 
     walletId = db.Column(db.Integer, primary_key=True) 
     userId = db.Column(db.Integer)
-    name=db.Column(db.String(100),nullable=True)
-    address = db.Column(db.String(66), unique=False)
-    privateKey = db.Column(db.String(50), unique=False,nullable=True)
+    name=db.Column(db.String(100),nullable=True) # whatever is fine
+    address = db.Column(db.String(66), unique=False) # in the text file
+    privateKey = db.Column(db.String(50), unique=False,nullable=True) # 
 
 class Stash(db.Model):
     def get_id(self):
@@ -82,6 +82,16 @@ class Event(db.Model):
        amount = db.Column(db.Integer,nullable=True)
        transactionId = db.Column(db.Integer)
 
+       def get_event(self):
+        return {
+            "eventId" : self.eventId,
+            "eventType" : self.eventType,
+            "name" : self.name,
+            "amount" : self.amount,
+            "transactionId" : self.transactionId
+        }
+                 
+
 class Arg(db.Model):
     def get_id(self):
            return (self.stashId)
@@ -93,16 +103,10 @@ class Arg(db.Model):
 class Oracle(db.Model):
     def get_id(self):
            return (self.oracleId)
-
-    oracleId = db.Column(db.Integer, primary_key=True)
+    oracleId = db.Column(db.Integer, primary_key=True, unique=True)
     oracleName = db.Column(db.String(50))
-    oraclePlatform = db.Column(db.String(50))
-    a0 = db.Column(db.String(50))
-    s0 = db.Column(db.String(50))
-    p0 = db.Column(db.String(50))
-    a1 = db.Column(db.String(50))
-    p1 = db.Column(db.Float)
-    timestamp=db.Column(db.DateTime())
+    price = db.Column(db.Float)
+    timestamp=db.Column(db.DateTime)
 
 
 class Dapp(db.Model):
@@ -114,6 +118,6 @@ class Dapp(db.Model):
     url = db.Column(db.String(250),nullable=True)
     description = db.Column(db.Text,nullable=True)
     image = db.Column(db.String(50),nullable=True)
-    # category = db.Column(db.String(50))
+    category = db.Column(db.String(50)) 
 
     

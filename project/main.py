@@ -91,6 +91,7 @@ def reporting_1():
         join(Stash).\
         group_by(Event.eventType, Stash.stashId)
 
+
     eventTypeCounts = []
     for event in eventTypeData:
         d = {"stashId": event[0], "eventType": event[1], "count": event[2]}

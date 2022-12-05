@@ -13,7 +13,31 @@ import sqlalchemy
 import urllib.parse
 
 wallet = Blueprint('wallet', __name__)
-@wallet.route('/add-wallet', methods=['POST'])
+@wallet.route('/addwallet', methods=['POST'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@jwt_required()
+def add_wallets():
+    data = request.json
+    # --- add to wallet table ---
+    # walletId = data["walletId"]
+    address = data["address"]
+    privateKey = data["privateKey"]
+    name = data["name"]
+
+    # get user
+    userId = get_jwt_identity()
+    user = User.query.filter_by(userId=userId).first() 
+    userId = user.userId
+
+    new_wallet = Wallet(address=address, privateKey=privateKey,name=name, userId=userId)
+    db.session.add(new_wallet)
+    
+    db.session.commit()
+    return jsonify({"walletId": new_wallet.walletId, "address": address,"privateKey": privateKey, "userId": userId}), 200
+
+
+
+@wallet.route('/remove-wallet', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 @jwt_required()
 def add_wallet():
@@ -21,7 +45,6 @@ def add_wallet():
     # --- add to wallet table ---
     # walletId = data["walletId"]
     address = data["address"]
-    privateKey = data["privateKey"]
     name = data["name"]
 
     # get user
