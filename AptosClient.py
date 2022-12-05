@@ -19,13 +19,13 @@ headers = {"Content-Type": "application/json"}
 
 response = requests.request("GET", url, headers=headers)
 
-print(response.text)
+# print(response.text)
 class AptosClient:
 
     def __init__():
-        self.rest_client = RestClient(NODE_URL)
+        rest_client = RestClient(NODE_URL)
 
-    def get_user(hash):
-        resources = self.get_transaction_by_hash()
+    def get_user(self,hash):
+        resources = self.rest_client.get_resources(hash)
 
     

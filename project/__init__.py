@@ -1,3 +1,4 @@
+import time
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import urllib.parse 
@@ -71,27 +72,26 @@ app.register_blueprint(main_blueprint)
 # from .models import User, Wallet
 from .models import *
 
-oc = OracleClient()
+# @scheduler.task('interval', id='do_job_1', seconds=5, misfire_grace_time=900)
 
-@scheduler.task('interval', id='oracle_manager', seconds=10, misfire_grace_time=900)
-def oracle_update():
-    with app.app_context():
-        print("Running job 1")
+# @scheduler.task('interval', id='oracle_manager', seconds=10, misfire_grace_time=900)
+# def oracle_update():
+#     with app.app_context():
+#         print("Running oracle manager")
+#         stopwatch = time.time()
         
-        new_prices = oc.update_switchboard()
-        for price in new_prices:
-            print("PRICE",price)
-            o = Oracle(
-                oracleName=price[0]+"_switchboard",
-                price=price[1],
-                timestamp=price[2])
-
-            # check if this oracle already exists
-            oracle = Oracle.query.filter_by(oracleName=o.oracleName, timestamp=price[2]).first()
-            if oracle is None:
-                db.session.add(o)
-        db.session.commit()
-    
+#         new_prices = oc.update_switchboard()
+#         for price in new_prices:
+#             # print("PRICE",price)
+#             o = Oracle(
+#                 oracleName=price[0]+"_switchboard",
+#                 price=price[1],
+#                 timestamp=price[2])
+#             # check if this oracle already exists
+#             oracle = Oracle.query.filter_by(oracleName=o.oracleName, timestamp=price[2]).first()
+#             if oracle is None:
+#                 db.session.add(o)
+#         db.session.commit()
 
 with app.app_context():
     user = User()

@@ -117,35 +117,6 @@ def insert_transaction():
         db.session.add(new_event)
     db.session.commit()
 
-# Look for txs with addr/func/event
-# @stash.route('/stash-contains')
-# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-# @jwt_required()
-# def stash_contains():
-    
-#     data = request.json
-#     filter_dic = dict(data['filter_dic'])
-#     stashId = data['stashId']
-#     # stash = Stash.query.filter_by(stashId=stashId).first()
-
-
-#     # {address: 12, event: "test"}
-
-
-#     stash_txs = Transaction.query.filter_by(stashId=data['stashId'])
-    
-#     # for tx in stash_txs:
-#     for filter_type in filter_dic.keys():
-#         if filter_type == "event":
-#             tx_events = Event.query.filter_by(event_type=filter_dic[filter_type],stashId=stashId)
-#         elif filter_type == "address":
-#             tx_events = Transaction.query.filter_by(address=filter_dic[filter_type])
-#         elif filter_type == "function":
-#             tx_events = Transaction.query.filter_by(function=filter_dic[filter_type])
-#     return {"result":tx_events}, 200
-
-
-    # pass
 
 
 

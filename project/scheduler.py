@@ -4,7 +4,6 @@ from . import scheduler,db,app
 
 oc = OracleClient()
 
-
 @scheduler.task('interval', id='oracle_manager', seconds=10, misfire_grace_time=900)
 def oracle_update():
     with app.app_context():
@@ -24,4 +23,5 @@ def oracle_update():
                 db.session.add(o)
             
         db.session.commit()
-    # get all the stashes
+
+

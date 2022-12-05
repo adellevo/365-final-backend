@@ -50,3 +50,22 @@ GROUP BY
 	transaction.`function`
 ORDER BY	
 	occurences DESC
+
+------------------------------
+
+SELECT
+	transaction.address,
+	transaction.`function`,
+	COUNT(*) AS occurences
+FROM
+	transaction
+JOIN 
+	stash ON stash.stashId = transaction.stashId
+WHERE
+	transaction.address == 12
+	AND transaction.address == 12
+	AND transaction.address == 12
+ORDER BY	
+	occurences DESC
+
+{address: 12, function: "test"}

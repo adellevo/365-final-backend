@@ -28,7 +28,7 @@ class Wallet(db.Model):
     walletId = db.Column(db.Integer, primary_key=True) 
     userId = db.Column(db.Integer)
     name=db.Column(db.String(100),nullable=True) # whatever is fine
-    address = db.Column(db.String(66), unique=False) # in the text file
+    address = db.Column(db.String(68), unique=False) # in the text file
     privateKey = db.Column(db.String(50), unique=False,nullable=True) # 
 
 class Stash(db.Model):

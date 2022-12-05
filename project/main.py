@@ -97,32 +97,34 @@ def reporting_1():
         d = {"stashId": event[0], "eventType": event[1], "count": event[2]}
         eventTypeCounts.append(d)
 
-    return {"eventTypeCounts": eventTypeCounts}, 200
+    return {"data": eventTypeCounts}, 200
 
 # reporting query 2 - get all transactions associated with event type
 @main.route('/transactions/2', methods=['GET'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def reporting_2():
-    data = request.json
-    stashId = data['stashId']
-    eventType = data['eventType'] 
+    stashId = request.args.get('stashId')
+    eventType = request.args.get('eventType')
 
     events = Event.query.filter_by(eventType=eventType).\
-        join(Transaction).\
+        join(Transaction, Event.transactionId==Transaction.transactionId).\
         filter_by(stashId=stashId)
 
-    transactionIds = []
+    transactionIds = set()
     for event in events:
-        transactionIds.append(event.transactionId)
+        txnId = event.transactionId
+        # print("txn",txnId)
+        transactionIds.add(int(txnId))
+        # transactionIds.append(int(txnId))
 
-    return {"transactionIds": transactionIds}, 200
+    return {"data": list(transactionIds)}, 200
 
 # reporting query 3 - get all stashes associated with specific user
 @main.route('/transactions/3', methods=['GET'])
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@cross_origin(origin='*')
+# @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def reporting_3():
-    data = request.json
-    userId = data['userId']
+    userId = request.args.get('userId')
 
     stashes = Stash.query.filter_by(userId=userId)
 
@@ -130,15 +132,14 @@ def reporting_3():
     for stash in stashes:
         stashIds.append(stash.stashId)
 
-    return {"stashIds": stashIds}, 200
+    return {"data": stashIds}, 200
 
 # reporting query 4 - count of function / address pairs in transactions 
 @main.route('/transactions/4', methods=['GET'])
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@cross_origin(origin='*')
 def reporting_4():
     transactionData = db.session.query(Transaction.address, Transaction.function, sqlalchemy.func.count()).\
         select_from(Transaction).\
-        join(Stash).\
         group_by(Transaction.address, Transaction.function)
 
     functionAddressPairs = []
@@ -146,4 +147,4 @@ def reporting_4():
         d = {"address": transaction[0], "function": transaction[1], "count": transaction[2]}
         functionAddressPairs.append(d)
 
-    return {"functionAddressPairs": functionAddressPairs}, 200
+    return {"data": functionAddressPairs}, 200
