@@ -18,12 +18,29 @@ class User(db.Model):
             "userId": self.userId,
             "username": self.username,
             "password": self.password,
+        }
 
+    def user_with_wallets(self,q):
+        wallets =q.q
+        return {
+            "userId": self.userId,
+            "username": self.username,
+            "password": self.password,
+            "wallets": [wallet.get_wallet() for wallet in self.Wallets]
         }
 
 class Wallet(db.Model):
     def get_id(self):
            return (self.walletId)
+
+    def get_wallet(self):
+        return {
+            "walletId": self.walletId,
+            "userId": self.userId,
+            "name": self.name,
+            "address": self.address,
+            "privateKey": self.privateKey,
+        }
 
     walletId = db.Column(db.Integer, primary_key=True) 
     userId = db.Column(db.Integer)
@@ -57,7 +74,8 @@ class Transaction(db.Model):
        address = db.Column(db.String(66))
        module = db.Column(db.String(100))
        function = db.Column(db.String(100))
-       date = db.Column(db.String(100),nullable=True)
+       date = db.Column(db.DateTime,nullable=True)
+       gas = db.Column(db.Integer,nullable=True)
        stashId = db.Column(db.Integer)
 
        def get_transaction(self):
@@ -120,4 +138,15 @@ class Dapp(db.Model):
     image = db.Column(db.String(50),nullable=True)
     category = db.Column(db.String(50)) 
 
+
+class Criteria(db.Model):
+    def get_id(self):
+           return (self.criteriaId)
+
+    criteriaId = db.Column(db.Integer, primary_key=True)
+    address = db.Column(db.String(66), nullable=True)
+    function = db.Column(db.String(50), nullable=True)
+    value = db.Column(db.Float, nullable=True)
+    eventType = db.Column(db.String(100), nullable=True)
+    operator = db.Column(db.String(2), nullable=True) #LT, GT, EQ, NO
     

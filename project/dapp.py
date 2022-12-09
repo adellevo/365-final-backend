@@ -17,11 +17,8 @@ dapp = Blueprint('dapp', __name__)
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def add_dapp():
     data = request.json
-    print(data)
-
     # --- add to dapp table ---
     name = data["name"]
-
     dapp = Dapp.query.filter_by(name=name).first()
     if dapp:
         return jsonify({"message": "Dapp already exists"}), 409

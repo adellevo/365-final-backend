@@ -35,26 +35,33 @@ def add_wallets():
     db.session.commit()
     return jsonify({"walletId": new_wallet.walletId, "address": address,"privateKey": privateKey, "userId": userId}), 200
 
+@wallet.route('/name-wallet', methods=['POST'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@jwt_required()
+def name_wallet():
+    data = request.json
+    walletId = data["walletId"]
+    name = data["name"]
+    wallet = Wallet.query.filter_by(walletId=walletId).update({"name":name})
+    if wallet:
+        db.session.commit()
+    # wallet.name = name
+    return jsonify({"walletId": walletId, "name": name}), 200
 
+@wallet.route('/get-wallets', methods=['GET'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+def get_wallets():
+    userId = request.args.get('userId')
+    wallets = Wallet.query.filter_by(userId=userId).all()
+    wallets = [wallet.get_wallet() for wallet in wallets]
+    return jsonify({"wallets": wallets}), 200
 
 @wallet.route('/remove-wallet', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 @jwt_required()
-def add_wallet():
+def remove_wallet():
     data = request.json
     # --- add to wallet table ---
-    # walletId = data["walletId"]
-    address = data["address"]
-    name = data["name"]
-
-    # get user
-    userId = get_jwt_identity()
-    user = User.query.filter_by(userId=userId).first() 
-    userId = user.userId
-
-    new_wallet = Wallet(address=address, privateKey=privateKey,name=name, userId=userId)
-    db.session.add(new_wallet)
-    
-    db.session.commit()
-    return jsonify({"walletId": new_wallet.walletId, "address": address,"privateKey": privateKey, "userId": userId}), 200
-
+    walletId = data["walletId"]
+    wallet = Wallet.query.filter_by(walletId=walletId).first()
+    db.session.delete(wallet)

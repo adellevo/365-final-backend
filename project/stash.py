@@ -11,6 +11,7 @@ from . import db
 from .models import *
 import sqlalchemy
 import urllib.parse
+import datetime
 
 stash = Blueprint('stash', __name__)
 @stash.route('/create-stash', methods=['POST'])
@@ -23,11 +24,15 @@ def create_stash():
     db.session.commit()
     
     for tx in data['transactions']:
+        time = datetime.datetime.fromtimestamp(int(float(int(tx['timestamp'])/1000000)))
+        print("TIME",time)
         new_txn = Transaction(
             address=tx['address'],
             module = tx['module'],
             function=tx['function'],
-            stashId=new_stash.stashId)
+            stashId=new_stash.stashId,
+            gas = tx['gas_used'],
+            date=time)
         db.session.add(new_txn)
         db.session.commit()
         # print("SEM",new_txn.transactionId)
@@ -35,8 +40,9 @@ def create_stash():
         events = tx['events']
         for event in events:
             print("EVENTS",event)
-            new_event = Event(eventType=event['type'], name="DEFAULT", amount=1, transactionId=new_txn.transactionId)
-            db.session.add(new_event)
+            if "data" in event.keys() and 'amount' in event['data'].keys():
+                new_event = Event(eventType=event['type'], name="DEFAULT", amount=1, transactionId=new_txn.transactionId)
+                db.session.add(new_event)
         db.session.commit()
 
     return {"message":"stash created"}, 200
@@ -75,7 +81,7 @@ def get_user_stashes():
 
 @stash.route('/delete-stash', methods=['POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-# @jwt_required()
+@jwt_required()
 def delete_stash():
     data = request.json
     stashId = data['stashId']
@@ -116,6 +122,26 @@ def insert_transaction():
         new_event = Event(eventType=event['type'], name=event['name'], amount=100000, transactionId=new_txn.transactionId)
         db.session.add(new_event)
     db.session.commit()
+
+    return {"message":"Transaction Inserted"},200
+
+@stash.route('/delete-transaction', methods=['POST'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@jwt_required()
+def delete_transaction():
+    data = request.json
+    transactionId = data['txnId']
+    tx = Transaction.query.filter_by(transactionId=transactionId)
+    if tx:
+        events = Event.query.filter_by(transactionId=transactionId)
+        for event in events:
+            Event.query.filter_by(eventId=event.eventId).delete()
+            db.session.commit()
+        Transaction.query.filter_by(transactionId=transactionId).delete()
+        db.session.commit()
+        return {"message":"Transaction Deleted"},200
+    else:
+        return {"message":"No Transaction found by ID"},400
 
 
 

@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
 
 # sql execution
-from .models import User
+from .models import User,Wallet,Stash
 from . import db
 
 auth = Blueprint('auth', __name__)
@@ -62,4 +62,11 @@ def login_post():
     user_dic = user.get_user()
     access_token = create_access_token(identity=user_dic["userId"])
     user_dic["access_token"] = access_token
+    with_wallets = Wallet.query.filter_by(userId=user_dic["userId"]).all()
+    with_stashes = Stash.query.filter_by(userId=user_dic["userId"]).all()
+    if with_stashes:
+        user_dic["stashes"] = [stash.get_stash() for stash in with_stashes]
+    if with_wallets:
+        user_dic["wallets"] = [wallet.get_wallet() for wallet in with_wallets]
+
     return jsonify({"user":user_dic,"message":"Login success"}) 
